@@ -35,6 +35,8 @@ import java.util.*;
  */
 public class MetadataRepositoryItem extends TextRepositoryItem {
 
+    private static final String VFMT_FORMAT_PATTERN = "yyyyMMdd.HHmmss";
+    private static final String UFMT_FORMAT_PATTERN = "yyyyMMddHHmmss";
     private MavenBuild build;
     private String groupId, artifactId, version;
     private Map<MavenArtifact,ArtifactRepositoryItem> items = new HashMap<MavenArtifact,ArtifactRepositoryItem>();
@@ -44,7 +46,7 @@ public class MetadataRepositoryItem extends TextRepositoryItem {
         // number seems to be always for the latest build, not the build that generated this
         // artifact; so we just use -1; it is essentially impossible that a project will be built
         // twice in the same millsecond, so there's no risk of collision
-        return _vfmt.format(date) + "-" + buildNo;
+        return new SimpleDateFormat(VFMT_FORMAT_PATTERN).format(date) + "-" + buildNo;
     }
 
     public static String formatDateVersion(Run buildRun) {
@@ -148,7 +150,7 @@ public class MetadataRepositoryItem extends TextRepositoryItem {
             String dateVers = formatDateVersion(theItem.getBuild());
 
             String itemVersion = version.replaceAll("SNAPSHOT", dateVers);
-            String lastMod = _ufmt.format(theItem.getLastModified());
+            String lastMod = new SimpleDateFormat(UFMT_FORMAT_PATTERN).format(theItem.getLastModified());
             buf.append("      <snapshotVersion>\n");
 
             // Optional classifier.
@@ -173,6 +175,4 @@ public class MetadataRepositoryItem extends TextRepositoryItem {
         }
     }
 
-    protected static SimpleDateFormat _ufmt = new SimpleDateFormat("yyyyMMddHHmmss");
-    protected static SimpleDateFormat _vfmt = new SimpleDateFormat("yyyyMMdd.HHmmss");
 }
