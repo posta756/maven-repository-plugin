@@ -18,7 +18,7 @@
     <url>http://wiki.jenkins-ci.org/display/JENKINS/Jenkins+Maven+Repository+Server</url>
 
     <build>
-
+        
 
         <plugins>
             <plugin>
@@ -29,15 +29,17 @@
 
                     <execution>
                         <id>copy-the-source</id>
-                        <phase>prepare-package</phase>
+                        <phase>validate</phase>
                         <goals>
                             <goal>execute</goal>
                         </goals>
                         <configuration>
 
                             <source>
+                                def dest = "${basedir}/src/main/resources";
+
                                 File target = new File(
-                                "${basedir}/target/classes/tools/com/nirima/jenkins/repository/jenkins-maven-plugin/${project.version}");
+                                "${dest}/tools/com/nirima/jenkins/repository/jenkins-maven-plugin/${project.version}");
                                 File src = new File(
                                 "${settings.localRepository}/com/nirima/jenkins/repository/jenkins-maven-plugin/${project.version}");
 
@@ -52,7 +54,7 @@
                                 }
 
                                 target = new File(
-                                        "${basedir}/target/classes/tools/com/nirima/jenkins/repository/pom/${project.version}");
+                                        "${dest}/tools/com/nirima/jenkins/repository/pom/${project.version}");
 
                                 src = new File(
                                         "${settings.localRepository}/com/nirima/jenkins/repository/pom/${project.version}");
@@ -124,7 +126,12 @@
             <version>2.10</version>
             <optional>true</optional>
         </dependency>
-
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>branch-api</artifactId>
+            <version>0.2-beta-4</version>
+            <optional>true</optional>
+        </dependency>
         <dependency>
             <groupId>com.nirima.jenkins.repository</groupId>
             <artifactId>jenkins-maven-plugin</artifactId>

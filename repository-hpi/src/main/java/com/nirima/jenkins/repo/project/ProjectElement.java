@@ -29,15 +29,16 @@ import com.nirima.jenkins.repo.build.ProjectBuildRepositoryRoot;
 import hudson.model.BuildableItemWithBuildWrappers;
 import com.nirima.jenkins.repo.AbstractRepositoryDirectory;
 import com.nirima.jenkins.repo.RepositoryDirectory;
+import hudson.model.Job;
 
 import java.util.Collection;
 import java.util.List;
 
 public class ProjectElement extends AbstractRepositoryDirectory implements RepositoryDirectory {
 
-    BuildableItemWithBuildWrappers item;
+    Job item;
 
-    public ProjectElement(RepositoryDirectory parent, BuildableItemWithBuildWrappers project)
+    public ProjectElement(RepositoryDirectory parent, Job project)
     {
         super(parent);
         if( project == null )
@@ -48,11 +49,14 @@ public class ProjectElement extends AbstractRepositoryDirectory implements Repos
 
     public @Override Collection<? extends RepositoryElement> getChildren() {
 
-        List<? extends RepositoryElement> ar =  Lists.newArrayList(
+        List ar =  Lists.newArrayList(
                 new ProjectBuildList(this, item, ProjectBuildList.Type.SHA1),
-                new ProjectBuildList(this, item, ProjectBuildList.Type.Build),
-                new ProjectBuildRepositoryRoot(this, item.asProject().getLastSuccessfulBuild(), "LastSuccessful")
+                new ProjectBuildList(this, item, ProjectBuildList.Type.Build)
         );
+
+        if( item.getLastSuccessfulBuild() != null ) {
+            ar.add( new ProjectBuildRepositoryRoot(this, item.getLastSuccessfulBuild(), "LastSuccessful") );
+        }
 
         return ar;
     }

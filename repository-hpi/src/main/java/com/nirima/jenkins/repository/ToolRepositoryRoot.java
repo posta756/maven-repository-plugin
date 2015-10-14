@@ -30,6 +30,7 @@ import com.nirima.jenkins.repo.RootElement;
 import com.nirima.jenkins.repo.build.DirectoryRepositoryItem;
 import com.nirima.jenkins.repo.fs.FileDirectoryRepositoryItem;
 import com.nirima.jenkins.repo.fs.UrlRepositoryItem;
+import jenkins.model.Jenkins;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -47,7 +48,8 @@ public class ToolRepositoryRoot extends AbstractRepositoryDirectory implements R
     public Collection<? extends RepositoryElement> getChildren() {
         List<RepositoryElement> elements = new ArrayList<RepositoryElement>();
 
-        File file = new File(this.getClass().getResource("/tools").getFile());
+        File file = new File(Jenkins.getInstance().getRootDir(), "repositoryPlugin/tools");
+
         File[] listFiles = file.listFiles();
         if( listFiles != null) {
             for( File f : listFiles )

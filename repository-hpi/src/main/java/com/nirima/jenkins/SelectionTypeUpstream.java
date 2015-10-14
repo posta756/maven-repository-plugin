@@ -51,7 +51,7 @@ public class SelectionTypeUpstream extends SelectionType {
     }
 
     @Override
-    public RepositoryAction getAction(AbstractBuild b) throws MalformedURLException, RepositoryDoesNotExistException {
+    public RepositoryAction getAction(Run<?,?> b) throws MalformedURLException, RepositoryDoesNotExistException {
 
         // What is the upstream project name?
         Cause.UpstreamCause theCause = (Cause.UpstreamCause) b.getCause(Cause.UpstreamCause.class);

@@ -1,5 +1,6 @@
 package com.nirima.jenkins.update;
 
+import jenkins.branch.MultiBranchProject;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
@@ -39,12 +40,7 @@ public class BuildUpdater {
     String project = br.readLine();
     String buildNumber = br.readLine();
 
-    for (Job j : Jenkins.getInstance().getAllItems(Job.class)) {
-      if (j.getName().equals(project)) {
-        // Correct job
-        build = j.getBuildByNumber(Integer.parseInt(buildNumber));
-      }
-    }
+    build = getBuild(project, buildNumber);
 
     if (build == null) {
       throw new RuntimeException("Build was not found");
@@ -66,8 +62,37 @@ public class BuildUpdater {
         System.out.println("Unexpected line: " + line);
       }
     }
+  }
 
+  private Run getBuild(String project, String buildNumber) {
 
+    if( project.indexOf(' ') > 0 ) {
+      String[] elements = project.split(" ");
+      return getMultiBranchProject(elements[0],elements[1], Integer.parseInt(buildNumber));
+    }
+
+    Run build = null;
+    for (Job j : Jenkins.getInstance().getAllItems(Job.class)) {
+      if (j.getName().equals(project)) {
+        // Correct job
+        build = j.getBuildByNumber(Integer.parseInt(buildNumber));
+      }
+    }
+    return build;
+  }
+
+  private Run getMultiBranchProject(String element, String job, int buildNumber) {
+    for (MultiBranchProject j : Jenkins.getInstance().getAllItems(MultiBranchProject.class)) {
+      if (j.getName().equals(element)) {
+        for (Object j2 : j.getAllJobs() )  {
+          if (((Job)j2).getName().equals(job)) {
+            // Correct job
+            return ((Job)j2).getBuildByNumber(buildNumber);
+          }
+        }
+      }
+    }
+    return null;
   }
 
   private MavenArtifact parseArtifact(BufferedReader br) throws IOException {

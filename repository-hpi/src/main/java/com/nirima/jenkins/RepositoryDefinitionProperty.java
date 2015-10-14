@@ -24,13 +24,14 @@
 package com.nirima.jenkins;
 
 import com.nirima.jenkins.action.RepositoryAction;
+import hudson.EnvVars;
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
-import hudson.model.BuildListener;
+import hudson.model.*;
 import hudson.tasks.BuildWrapper;
 import hudson.tasks.BuildWrapperDescriptor;
+import jenkins.tasks.SimpleBuildWrapper;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.export.ExportedBean;
 
@@ -40,7 +41,7 @@ import java.net.MalformedURLException;
 import java.util.Map;
 
 @ExportedBean
-public class RepositoryDefinitionProperty extends BuildWrapper implements Serializable {
+public class RepositoryDefinitionProperty extends SimpleBuildWrapper implements Serializable {
 
     public SelectionType upstream;
 
@@ -72,8 +73,8 @@ public class RepositoryDefinitionProperty extends BuildWrapper implements Serial
     }
 
     @Override
-    public Environment setUp(final AbstractBuild build, Launcher launcher, final BuildListener listener) throws IOException, InterruptedException {
-        return new BuildWrapper.Environment() {
+    public void setUp(Context context, final Run<?, ?> build, FilePath workspace, Launcher launcher, final TaskListener listener, EnvVars initialEnvironment) throws IOException, InterruptedException {
+        new BuildWrapper.Environment() {
 
             @Override
             public void buildEnvVars(Map<String, String> env) {

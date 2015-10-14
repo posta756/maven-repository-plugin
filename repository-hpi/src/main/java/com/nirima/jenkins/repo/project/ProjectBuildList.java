@@ -29,6 +29,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import hudson.model.BuildableItemWithBuildWrappers;
+import hudson.model.Job;
 import hudson.model.Result;
 import hudson.model.Run;
 import hudson.plugins.git.util.BuildData;
@@ -51,9 +52,9 @@ public class ProjectBuildList extends AbstractRepositoryDirectory implements Rep
     }
 
     Type type;
-     BuildableItemWithBuildWrappers item;
+    Job item;
 
-    protected ProjectBuildList(RepositoryDirectory parent, BuildableItemWithBuildWrappers item, Type type) {
+    protected ProjectBuildList(RepositoryDirectory parent, Job item, Type type) {
         super(parent);
         this.type = type;
         this.item = item;
@@ -62,6 +63,10 @@ public class ProjectBuildList extends AbstractRepositoryDirectory implements Rep
     @Override
     public String getName() {
         return type.name();  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    private Job<?,?> getJob() {
+        return item;
     }
 
     public Collection<ProjectBuildRepositoryRoot> getChildren() {
@@ -78,7 +83,7 @@ public class ProjectBuildList extends AbstractRepositoryDirectory implements Rep
             };
 
             // Transform builds into items
-            Iterable<ProjectBuildRepositoryRoot> i = Iterables.transform(item.asProject().getBuilds(), fn);
+            Iterable<ProjectBuildRepositoryRoot> i = Iterables.transform(getJob().getBuilds(), fn);
 
             // Remove NULL entries
             return Lists.newArrayList(Iterables.filter(i, new Predicate<ProjectBuildRepositoryRoot>() {
@@ -93,7 +98,7 @@ public class ProjectBuildList extends AbstractRepositoryDirectory implements Rep
 
             log.info("Getting builds from {}", item);
 
-            for (Run run : item.asProject().getBuilds()) {
+            for (Run run : getJob().getBuilds()) {
                 try
                 {
                     BuildData bd = run.getAction(BuildData.class);

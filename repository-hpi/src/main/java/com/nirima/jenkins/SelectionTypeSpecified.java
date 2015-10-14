@@ -5,6 +5,7 @@ import com.nirima.jenkins.action.RepositoryAction;
 import hudson.Extension;
 import hudson.model.AbstractBuild;
 import hudson.model.Descriptor;
+import hudson.model.Run;
 import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -29,7 +30,7 @@ public class SelectionTypeSpecified extends SelectionType  {
     }
 
     @Override
-    public RepositoryAction getAction(AbstractBuild build) throws MalformedURLException, RepositoryDoesNotExistException {
+    public RepositoryAction getAction(Run<?,?> build) throws MalformedURLException, RepositoryDoesNotExistException {
         return new PathInRepositoryAction(path);
     }
 

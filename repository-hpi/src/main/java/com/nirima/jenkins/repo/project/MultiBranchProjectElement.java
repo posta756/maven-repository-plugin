@@ -24,48 +24,52 @@
 package com.nirima.jenkins.repo.project;
 
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.nirima.jenkins.repo.AbstractRepositoryDirectory;
-import hudson.model.BuildableItem;
-import hudson.model.BuildableItemWithBuildWrappers;
 import com.nirima.jenkins.repo.RepositoryDirectory;
 import com.nirima.jenkins.repo.RepositoryElement;
+import com.nirima.jenkins.repo.build.ProjectBuildRepositoryRoot;
+import hudson.model.BuildableItem;
+import hudson.model.BuildableItemWithBuildWrappers;
+import hudson.model.Job;
 import jenkins.branch.MultiBranchProject;
 import jenkins.model.Jenkins;
 
 import java.util.Collection;
 import java.util.List;
 
-public class ProjectsElement extends AbstractRepositoryDirectory implements RepositoryDirectory {
-    public ProjectsElement(RepositoryDirectory parent) {
+public class MultiBranchProjectElement extends AbstractRepositoryDirectory implements RepositoryDirectory {
+
+    MultiBranchProject item;
+
+    public MultiBranchProjectElement(RepositoryDirectory parent, MultiBranchProject project)
+    {
         super(parent);
+        if( project == null )
+            throw new IllegalArgumentException("project must not be null");
+
+        this.item = project;
     }
 
-    @Override
+    public @Override Collection<? extends RepositoryElement> getChildren() {
+
+        Collection<Job> jobs = item.getAllJobs();
+
+        return ProjectUtils.getChildren(this, jobs );
+
+    }
+
     public String getName() {
-        return "project";
+       return item.getName();
     }
 
-    public Collection<RepositoryElement> getChildren() {
-
-        return ProjectUtils.getChildren(this,Jenkins.getInstance().getAllItems(BuildableItem.class) );
-
-    }
-
-    public RepositoryElement getChild(String element) {
-         for( RepositoryElement e : getChildren())
-        {
-            if( e.getName().equals(element) )
-                return e;
-        }
-        throw new IllegalArgumentException();
+    public String getDescription() {
+        return "Project " + item.getName();
     }
 
     @Override
     public String toString() {
-        return "ProjectsElement{}";
+        return "ProjectElement{" + item.getName() + "}";
     }
 }

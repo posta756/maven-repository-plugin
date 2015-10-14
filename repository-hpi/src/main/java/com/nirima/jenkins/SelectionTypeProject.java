@@ -76,7 +76,7 @@ public class SelectionTypeProject extends SelectionType {
     }
 
     @Override
-    public RepositoryAction getAction(AbstractBuild theBuild) throws MalformedURLException, RepositoryDoesNotExistException {
+    public RepositoryAction getAction(Run<?,?> theBuild) throws MalformedURLException, RepositoryDoesNotExistException {
 
         int id;
         String suffix;
