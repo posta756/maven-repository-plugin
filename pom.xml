@@ -13,6 +13,10 @@
     <version>1.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <ciManagement>
+        <url>http://localhost:8080/jenkins</url>
+    </ciManagement>
+
     <profiles>
         <profile>
             <id>repository</id>
