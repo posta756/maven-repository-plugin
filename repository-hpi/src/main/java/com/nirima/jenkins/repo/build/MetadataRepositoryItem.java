@@ -38,7 +38,7 @@ public class MetadataRepositoryItem extends TextRepositoryItem {
 
     private static final String VFMT_FORMAT_PATTERN = "yyyyMMdd.HHmmss";
     private static final String UFMT_FORMAT_PATTERN = "yyyyMMddHHmmss";
-    private AbstractBuild build;
+    private Run<?,?> build;
     private String groupId, artifactId, version;
     private Map<MavenArtifact,ArtifactRepositoryItem> items = new HashMap<MavenArtifact,ArtifactRepositoryItem>();
 
@@ -55,7 +55,7 @@ public class MetadataRepositoryItem extends TextRepositoryItem {
         return formatDateVersion(buildRun.getTime(), buildRun.getNumber());
     }
 
-    public MetadataRepositoryItem(AbstractBuild build, MavenArtifact artifact) {
+    public MetadataRepositoryItem(Run<?,?> build, MavenArtifact artifact) {
         this.build      = build;
         this.groupId    = artifact.groupId;
         this.artifactId = artifact.artifactId;
@@ -88,7 +88,7 @@ public class MetadataRepositoryItem extends TextRepositoryItem {
                 .getName();
     }
         else {
-            return "From Build #" + build.getNumber() + " of " + build.getProject().getDisplayName();
+            return "From Build #" + build.getNumber() + " of " + build.getDisplayName();
         }
     }
 

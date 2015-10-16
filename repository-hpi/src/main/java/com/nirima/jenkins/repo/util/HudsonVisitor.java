@@ -33,6 +33,7 @@ import hudson.maven.reporters.MavenArtifact;
 import hudson.maven.reporters.MavenArtifactRecord;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildableItemWithBuildWrappers;
+import hudson.model.Run;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,7 +49,7 @@ public abstract class HudsonVisitor {
     public void visitBuild(AbstractBuild build)
     {}
 
-    public void visitArtifact(AbstractBuild build, MavenArtifact artifact)
+    public void visitArtifact(Run<?,?> build, MavenArtifact artifact)
     {}
 
     public void visitProject(BuildableItemWithBuildWrappers item)

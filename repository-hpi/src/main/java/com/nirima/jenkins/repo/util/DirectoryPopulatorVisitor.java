@@ -74,7 +74,7 @@ public class DirectoryPopulatorVisitor extends HudsonVisitor {
         return Joiner.on("->").join(listOfProjectNames);
     }
 
-    public @Override void visitArtifact(AbstractBuild build, MavenArtifact artifact)
+    public @Override void visitArtifact(Run build, MavenArtifact artifact)
     {
         // add a Maven 2 compatible artifact entry
         ArtifactRepositoryItem repositoryItem = new ArtifactRepositoryItem(build, artifact, false);

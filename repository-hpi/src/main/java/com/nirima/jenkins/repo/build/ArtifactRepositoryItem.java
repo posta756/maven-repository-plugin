@@ -42,11 +42,11 @@ import java.util.Date;
 public class ArtifactRepositoryItem implements RepositoryContent {
 
     private MavenArtifact artifact;
-    private AbstractBuild build;
+    private Run<?,?>      build;
     private boolean timestampedSnapshot;
     private RepositoryDirectory directory;
 
-    public ArtifactRepositoryItem(AbstractBuild build, MavenArtifact mavenArtifact, boolean timestampedSnapshot) {
+    public ArtifactRepositoryItem(Run<?,?> build, MavenArtifact mavenArtifact, boolean timestampedSnapshot) {
         this.artifact = mavenArtifact;
         this.build = build;
         this.timestampedSnapshot = timestampedSnapshot;
@@ -92,7 +92,7 @@ public class ArtifactRepositoryItem implements RepositoryContent {
                 .getName();
         }
         else {
-            return "From Build #" + build.getNumber() + " of " + build.getProject().getDisplayName();
+            return "From Build #" + build.getNumber() + " of " + build.getDisplayName();
         }
     }
 
@@ -138,7 +138,7 @@ public class ArtifactRepositoryItem implements RepositoryContent {
         return null; // We don't know..
     }
 
-    public AbstractBuild getBuild() {
+    public Run<?,?> getBuild() {
         return build;
     }
 }

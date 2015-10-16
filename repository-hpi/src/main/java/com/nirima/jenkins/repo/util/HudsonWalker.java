@@ -159,20 +159,18 @@ public class HudsonWalker {
                 }
 
             }
+        } else {
 
-        } else if(run instanceof FreeStyleBuild) {
-            FreeStyleBuild fsb = (FreeStyleBuild) run;
-            FreestyleMavenArtifactRecords records = fsb.getAction(FreestyleMavenArtifactRecords.class);
+            FreestyleMavenArtifactRecords records = run.getAction(FreestyleMavenArtifactRecords.class);
             if( records != null ) {
                 for(ExtendedMavenArtifactRecord record : records.recordList ) {
-                    visitMavenArtifactRecord(visitor, fsb, record);
+                    visitMavenArtifactRecord(visitor, run, record);
                 }
             }
-
         }
     }
 
-    private static void visitMavenArtifactRecord(HudsonVisitor visitor, AbstractBuild build, MavenArtifactRecord artifacts) {
+    private static void visitMavenArtifactRecord(HudsonVisitor visitor, Run build, MavenArtifactRecord artifacts) {
 
         log.trace("Visit Build {} artifacts {}", build, artifacts);
         try {
