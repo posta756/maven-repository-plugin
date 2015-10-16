@@ -88,7 +88,8 @@ public class RepositoryPlugin extends Plugin implements RootAction, Serializable
         String file = this.getClass().getResource('/'+this.getClass().getName().replace('.', '/')+".class").getFile();
 
 
-        file = file.substring(5,file.indexOf('!'));
+        if( file.startsWith("file:") )
+            file = file.substring(5,file.indexOf('!'));
 
         try {
             logger.info("Expanding " + file + "into " + root);

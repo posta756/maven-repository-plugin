@@ -74,27 +74,20 @@ public class RepositoryDefinitionProperty extends SimpleBuildWrapper implements 
 
     @Override
     public void setUp(Context context, final Run<?, ?> build, FilePath workspace, Launcher launcher, final TaskListener listener, EnvVars initialEnvironment) throws IOException, InterruptedException {
-        new BuildWrapper.Environment() {
 
-            @Override
-            public void buildEnvVars(Map<String, String> env) {
-                super.buildEnvVars(env);    //To change body of overridden methods use File | Settings | File Templates.
+        try {
+            RepositoryAction repositoryAction = upstream.getAction(build);
+            build.addAction(repositoryAction);
+            context.env("Jenkins.Repository", repositoryAction.getUrl().toExternalForm());
+            listener.getLogger().println("Setting environment Jenkins.Repository = " + repositoryAction.getUrl().toExternalForm());
+        } catch (SelectionType.RepositoryDoesNotExistException x) {
+            listener.getLogger().println("You asked for an upstream repository, but it does not exist");
+            throw new RuntimeException(x);
+        } catch (MalformedURLException e) {
+            listener.getLogger().println("Problem setting upstream repository URL");
+            throw new RuntimeException(e);
+        }
 
-                try {
-                    RepositoryAction repositoryAction = upstream.getAction(build);
-                    build.addAction(repositoryAction);
-                    env.put("Jenkins.Repository", repositoryAction.getUrl().toExternalForm());
-                    listener.getLogger().println("Setting environment Jenkins.Repository = " + repositoryAction.getUrl().toExternalForm());
-                } catch (SelectionType.RepositoryDoesNotExistException x) {
-                    listener.getLogger().println("You asked for an upstream repository, but it does not exist");
-                    throw new RuntimeException(x);
-                } catch (MalformedURLException e) {
-                    listener.getLogger().println("Problem setting upstream repository URL");
-                    throw new RuntimeException(e);
-                }
-
-            }
-        };
     }
 
 
