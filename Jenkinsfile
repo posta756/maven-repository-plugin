@@ -1,6 +1,7 @@
 node {
   checkout scm;
 
+  def jobName = "${env.JOB_NAME}"
   def theJob = jobName.replace("/", " ");
 
   def mvnHome = tool 'latest'
