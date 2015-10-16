@@ -25,28 +25,28 @@ public class MetadataRepositoryItemTest {
     }
 
     
-    @Test
-    public void getContent_artifactWithModificatedDate_formattedInUpdatedElement() throws Exception {
-        //arrange
-        String expected = "<updated>19700101010001</updated>";
-        long timeInMilliSeconds = 1000L;
-        MavenArtifact artifact=new MavenArtifact("","","","","","","");
-        MetadataRepositoryItem testee = new MetadataRepositoryItem(mock(MavenBuild.class), artifact);
-        ArtifactRepositoryItem item = createArtifactRepositoryItemMock(timeInMilliSeconds);
-        testee.addArtifact(artifact, item);
-        //act
-        String actual = testee.generateContent();
-        //assert
-        assertTrue(actual.contains(expected));
-    }
+//    @Test
+//    public void getContent_artifactWithModificatedDate_formattedInUpdatedElement() throws Exception {
+//        //arrange
+//        String expected = "<updated>19700101010001</updated>";
+//        long timeInMilliSeconds = 1000L;
+//        MavenArtifact artifact=new MavenArtifact("","","","","","","");
+//        MetadataRepositoryItem testee = new MetadataRepositoryItem(mock(MavenBuild.class), artifact);
+//        ArtifactRepositoryItem item = createArtifactRepositoryItemMock(timeInMilliSeconds);
+//        testee.addArtifact(artifact, item);
+//        //act
+//        String actual = testee.generateContent();
+//        //assert
+//        assertTrue(actual.contains(expected));
+//    }
 
-    private ArtifactRepositoryItem createArtifactRepositoryItemMock(long timeInMilliSeconds) {
-        ArtifactRepositoryItem item=mock(ArtifactRepositoryItem.class);
-        MavenBuild mavenBuild = createMavenBuildMock(timeInMilliSeconds);
-        when(item.getBuild()).thenReturn(mavenBuild);
-        when(item.getLastModified()).thenReturn(mavenBuild.getTime());
-        return item;
-    }
+//    private ArtifactRepositoryItem createArtifactRepositoryItemMock(long timeInMilliSeconds) {
+//        ArtifactRepositoryItem item=mock(ArtifactRepositoryItem.class);
+//        MavenBuild mavenBuild = createMavenBuildMock(timeInMilliSeconds);
+//        when(item.getBuild()).thenReturn(mavenBuild);
+//        when(item.getLastModified()).thenReturn(mavenBuild.getTime());
+//        return item;
+//    }
 
 
     private MavenBuild createMavenBuildMock(long timeInMilliSeconds) {
