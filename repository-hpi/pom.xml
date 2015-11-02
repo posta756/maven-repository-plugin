@@ -156,7 +156,8 @@
           			<artifactId>hamcrest-core</artifactId>
         		</exclusion>
         	</exclusions>			
-		</dependency>        
+		</dependency>
+
 
     </dependencies>
 

@@ -26,13 +26,12 @@ package com.nirima.jenkins.repo.util;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
+
 import com.nirima.jenkins.action.ProjectRepositoryAction;
 import com.nirima.jenkins.action.RepositoryAction;
-import com.nirima.jenkins.repo.RepositoryElement;
-import com.nirima.jenkins.repo.build.ArtifactRepositoryItem;
-import com.nirima.jenkins.update.ExtendedMavenArtifactRecord;
-import com.nirima.jenkins.update.FreestyleMavenArtifactRecords;
+import com.nirima.jenkins.update.RepositoryArtifactRecord;
+
+import com.nirima.jenkins.update.RepositoryArtifactRecords;
 
 import hudson.maven.MavenBuild;
 import hudson.maven.MavenModule;
@@ -40,12 +39,10 @@ import hudson.maven.MavenModuleSetBuild;
 import hudson.maven.reporters.MavenArtifact;
 import hudson.maven.reporters.MavenArtifactRecord;
 import hudson.model.*;
-import hudson.util.RunList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -161,13 +158,34 @@ public class HudsonWalker {
             }
         } else {
 
-            FreestyleMavenArtifactRecords records = run.getAction(FreestyleMavenArtifactRecords.class);
+            RepositoryArtifactRecords records = run.getAction(RepositoryArtifactRecords.class);
             if( records != null ) {
-                for(ExtendedMavenArtifactRecord record : records.recordList ) {
-                    visitMavenArtifactRecord(visitor, run, record);
+                for(RepositoryArtifactRecord record : records.recordList ) {
+                    visitRepositoryRecord(visitor, run, record);
                 }
             }
         }
+    }
+
+    private static void visitRepositoryRecord(HudsonVisitor visitor, Run build,
+                                              RepositoryArtifactRecord artifacts) {
+        log.trace("Visit Build {} artifacts {}", build, artifacts);
+        try {
+            visitor.visitArtifact(build, artifacts.pomArtifact);
+
+            if (artifacts.mainArtifact != artifacts.pomArtifact) {
+                // Sometimes the POM is the only thing being made..
+                visitor.visitArtifact(build, artifacts.mainArtifact);
+            }
+            for (MavenArtifact art : artifacts.attachedArtifacts) {
+                visitor.visitArtifact(build, art);
+            }
+        }
+        catch(Exception ex) {
+            log.error("Error fetching artifact details");
+            log.error("Error", ex);
+        }
+
     }
 
     private static void visitMavenArtifactRecord(HudsonVisitor visitor, Run build, MavenArtifactRecord artifacts) {

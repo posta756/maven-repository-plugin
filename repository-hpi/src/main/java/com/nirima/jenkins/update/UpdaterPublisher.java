@@ -11,9 +11,7 @@ import java.util.Map;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.maven.MavenBuildProxy;
 import hudson.maven.reporters.MavenArtifact;
-import hudson.maven.reporters.MavenArtifactRecord;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
@@ -104,11 +102,11 @@ public class UpdaterPublisher extends Recorder implements Serializable, SimpleBu
 
       Map<String,String> artifacts = new HashMap<String,String>();
 
-      FreestyleMavenArtifactRecords mar = build.getAction(FreestyleMavenArtifactRecords.class);
+      RepositoryArtifactRecords mar = build.getAction(RepositoryArtifactRecords.class);
       if( mar == null )
         return;
 
-      for(ExtendedMavenArtifactRecord xmar : mar.recordList)
+      for(RepositoryArtifactRecord xmar : mar.recordList)
       {
         for(MavenArtifact a : xmar.fileMap.keySet()) {
           File f = xmar.fileMap.get(a);

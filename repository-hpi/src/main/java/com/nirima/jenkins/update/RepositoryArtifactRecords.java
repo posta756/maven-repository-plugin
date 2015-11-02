@@ -1,18 +1,17 @@
 package com.nirima.jenkins.update;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import hudson.maven.reporters.MavenArtifact;
-import hudson.maven.reporters.MavenArtifactRecord;
 import hudson.model.Action;
 
 /**
  * Created by magnayn on 12/08/2015.
  */
-public class FreestyleMavenArtifactRecords implements Action {
+public class RepositoryArtifactRecords implements Action, Serializable {
 
-  public List<ExtendedMavenArtifactRecord> recordList = new ArrayList<ExtendedMavenArtifactRecord>();
+  public List<RepositoryArtifactRecord> recordList = new ArrayList<RepositoryArtifactRecord>();
 
   @Override
   public String getIconFileName() {

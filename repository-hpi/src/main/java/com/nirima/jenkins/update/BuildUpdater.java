@@ -1,23 +1,14 @@
 package com.nirima.jenkins.update;
 
-import jenkins.branch.MultiBranchProject;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import hudson.maven.reporters.MavenArtifact;
-import hudson.maven.reporters.MavenArtifactRecord;
-import hudson.model.Job;
 import hudson.model.Run;
-import jenkins.model.Jenkins;
 
 /**
  * Created by magnayn on 12/08/2015.
@@ -25,107 +16,32 @@ import jenkins.model.Jenkins;
 public class BuildUpdater {
 
   Run build;
-  private List<MavenArtifact> attachedArtifacts = new ArrayList<MavenArtifact>();
-  private MavenArtifact mainArtifact;
-  private MavenArtifact pomArtifact;
-  private String repositoryUrl;
-  private String repositoryId;
-  private Map<MavenArtifact, File> fileMap = new HashMap<MavenArtifact, File>();
+  RepositoryArtifactRecord bup;
 
   public BuildUpdater(StaplerRequest req, StaplerResponse rsp) throws IOException {
-    // Get the job
-    InputStreamReader isr = new InputStreamReader(req.getInputStream());
+    InputStream is = req.getInputStream();
+    InputStreamReader isr = new InputStreamReader(is);
+
     BufferedReader br = new BufferedReader(isr);
 
-    String project = br.readLine();
-    String buildNumber = br.readLine();
-
-    build = getBuild(project, buildNumber);
+    build = ProjectReference.read(br).getBuild();
+    bup = RepositoryArtifactRecord.parse(br);
 
     if (build == null) {
       throw new RuntimeException("Build was not found");
     }
-
-    String line;
-    while ((line = br.readLine()) != null) {
-                                 if (line.equals("[pom]")) {
-        pomArtifact = parseArtifact(br);
-      } else if (line.equals("[main]")) {
-        mainArtifact = parseArtifact(br);
-      } else if (line.equals("[attached]")) {
-        attachedArtifacts.add(parseArtifact(br));
-      } else if (line.equals("[repositoryUrl]")) {
-        repositoryUrl = br.readLine();
-      } else if (line.equals("[repositoryId]")) {
-        repositoryId = br.readLine();
-      } else {
-        System.out.println("Unexpected line: " + line);
-      }
-    }
   }
 
-  private Run getBuild(String project, String buildNumber) {
-
-    if( project.indexOf(' ') > 0 ) {
-      String[] elements = project.split(" ");
-      return getMultiBranchProject(elements[0],elements[1], Integer.parseInt(buildNumber));
-    }
-
-    Run build = null;
-    for (Job j : Jenkins.getInstance().getAllItems(Job.class)) {
-      if (j.getName().equals(project)) {
-        // Correct job
-        build = j.getBuildByNumber(Integer.parseInt(buildNumber));
-      }
-    }
-    return build;
-  }
-
-  private Run getMultiBranchProject(String element, String job, int buildNumber) {
-    for (MultiBranchProject j : Jenkins.getInstance().getAllItems(MultiBranchProject.class)) {
-      if (j.getName().equals(element)) {
-        for (Object j2 : j.getAllJobs() )  {
-          if (((Job)j2).getName().equals(job)) {
-            // Correct job
-            return ((Job)j2).getBuildByNumber(buildNumber);
-          }
-        }
-      }
-    }
-    return null;
-  }
-
-  private MavenArtifact parseArtifact(BufferedReader br) throws IOException {
-
-    String file = br.readLine();
-    String groupId = br.readLine();
-    String artifactId = br.readLine();
-    String version = br.readLine();
-    String classifier = br.readLine();
-    String type = br.readLine();
-    String fileName = br.readLine();
-    String md5sum = br.readLine();
 
 
-    MavenArtifact a = new MavenArtifact(groupId, artifactId, version, classifier, type, fileName, md5sum);
-    fileMap.put(a, new File(file) );
-    return a;
-  }
 
   public void execute() {
 
-    FreestyleMavenArtifactRecords records = build.getAction(FreestyleMavenArtifactRecords.class);
+    RepositoryArtifactRecords records = build.getAction(RepositoryArtifactRecords.class);
     if( records == null )
-      records = new FreestyleMavenArtifactRecords();
+      records = new RepositoryArtifactRecords();
 
-
-    ExtendedMavenArtifactRecord mar = new ExtendedMavenArtifactRecord(null,
-                                                      pomArtifact,
-                                                      mainArtifact,
-                                                      attachedArtifacts,
-                                                      repositoryUrl,
-                                                      repositoryId,fileMap);
-    records.recordList.add(mar);
+    records.recordList.add(bup);
     build.addAction(records);
 
   }
