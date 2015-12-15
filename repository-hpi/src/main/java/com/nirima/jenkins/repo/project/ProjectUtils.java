@@ -48,4 +48,8 @@ public class ProjectUtils {
             }
         });
     }
+
+    public static String sanitizeName(String name) {
+        return name.replace("/","-").replace("%2F","-");
+    }
 }

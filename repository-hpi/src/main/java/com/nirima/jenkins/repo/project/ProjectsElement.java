@@ -29,13 +29,16 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.nirima.jenkins.repo.AbstractRepositoryDirectory;
+import hudson.maven.MavenModule;
 import hudson.model.BuildableItem;
 import hudson.model.BuildableItemWithBuildWrappers;
 import com.nirima.jenkins.repo.RepositoryDirectory;
 import com.nirima.jenkins.repo.RepositoryElement;
+import hudson.model.Hudson;
 import jenkins.branch.MultiBranchProject;
 import jenkins.model.Jenkins;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 
@@ -51,7 +54,20 @@ public class ProjectsElement extends AbstractRepositoryDirectory implements Repo
 
     public Collection<RepositoryElement> getChildren() {
 
-        return ProjectUtils.getChildren(this,Jenkins.getInstance().getAllItems(BuildableItem.class) );
+        return ProjectUtils.getChildren(this,
+                Collections2.filter(Jenkins.getInstance().getAllItems(BuildableItem.class), new Predicate<BuildableItem>() {
+                    @Override
+                    public boolean apply(@Nullable BuildableItem input) {
+                        if( input == null )
+                            return false;
+
+                        // top level only.
+                        if( input.getParent() instanceof Hudson)
+                            return true;
+
+                        return false;
+                    }
+                }));
 
     }
 

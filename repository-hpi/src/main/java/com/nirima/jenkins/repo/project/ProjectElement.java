@@ -34,6 +34,8 @@ import hudson.model.Job;
 import java.util.Collection;
 import java.util.List;
 
+import static com.nirima.jenkins.repo.project.ProjectUtils.sanitizeName;
+
 public class ProjectElement extends AbstractRepositoryDirectory implements RepositoryDirectory {
 
     Job item;
@@ -62,15 +64,15 @@ public class ProjectElement extends AbstractRepositoryDirectory implements Repos
     }
 
     public String getName() {
-       return item.getName();
+       return sanitizeName(item.getName());
     }
 
     public String getDescription() {
-        return "Project " + item.getName();
+        return "Project " + getName();
     }
 
     @Override
     public String toString() {
-        return "ProjectElement{" + item.getName() + "}";
+        return "ProjectElement{" + getName() + "}";
     }
 }

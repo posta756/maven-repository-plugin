@@ -39,6 +39,8 @@ import jenkins.model.Jenkins;
 import java.util.Collection;
 import java.util.List;
 
+import static com.nirima.jenkins.repo.project.ProjectUtils.sanitizeName;
+
 public class MultiBranchProjectElement extends AbstractRepositoryDirectory implements RepositoryDirectory {
 
     MultiBranchProject item;
@@ -61,15 +63,15 @@ public class MultiBranchProjectElement extends AbstractRepositoryDirectory imple
     }
 
     public String getName() {
-       return item.getName();
+       return sanitizeName(item.getName());
     }
 
     public String getDescription() {
-        return "Project " + item.getName();
+        return "Project " + getName();
     }
 
     @Override
     public String toString() {
-        return "ProjectElement{" + item.getName() + "}";
+        return "ProjectElement{" + getName() + "}";
     }
 }
