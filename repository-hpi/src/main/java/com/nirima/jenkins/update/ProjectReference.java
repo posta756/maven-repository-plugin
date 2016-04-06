@@ -38,7 +38,14 @@ public class ProjectReference implements Serializable {
 
     if( project.indexOf(' ') > 0 ) {
       String[] elements = project.split(" ");
-      return getMultiBranchProject(elements[0],elements[1], Integer.parseInt(buildNumber));
+
+      if( elements.length == 2 ) {
+        // Assume that this is a traditional multi-branch project
+        return getMultiBranchProject(elements[0], elements[1], Integer.parseInt(buildNumber));
+      } else if( elements.length == 3 ) {
+        // This is likely a folder, like github or bitbucket. So we'll just ignore the folder.
+        return getMultiBranchProject(elements[1], elements[2], Integer.parseInt(buildNumber));
+      }
     }
 
     Run build = null;

@@ -38,6 +38,7 @@ import hudson.model.Hudson;
 import jenkins.branch.MultiBranchProject;
 import jenkins.model.Jenkins;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
@@ -52,6 +53,7 @@ public class ProjectsElement extends AbstractRepositoryDirectory implements Repo
         return "project";
     }
 
+    @Nonnull
     public Collection<RepositoryElement> getChildren() {
 
         return ProjectUtils.getChildren(this,
@@ -63,6 +65,9 @@ public class ProjectsElement extends AbstractRepositoryDirectory implements Repo
 
                         // top level only.
                         if( input.getParent() instanceof Hudson)
+                            return true;
+
+                        if( input.getParent() instanceof jenkins.branch.OrganizationFolder )
                             return true;
 
                         return false;
