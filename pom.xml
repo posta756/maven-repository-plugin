@@ -9,6 +9,7 @@
     <groupId>com.nirima.jenkins.repository</groupId>
     <artifactId>pom</artifactId>
     <name>Jenkins Maven Repository Server : Project POM</name>
+    <description>Repository Project POM</description>
 
     <version>1.4-SNAPSHOT</version>
     <packaging>pom</packaging>

@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +18,7 @@ import hudson.maven.reporters.MavenArtifact;
 /**
  * Created by magnayn on 01/11/15.
  */
-public class RepositoryArtifactRecord {
+public class RepositoryArtifactRecord implements Serializable {
   public List<MavenArtifact> attachedArtifacts = new ArrayList<MavenArtifact>();
   public MavenArtifact mainArtifact;
   public MavenArtifact pomArtifact;
